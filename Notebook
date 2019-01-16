@@ -73,8 +73,8 @@ mv "$FILE" "${FILE/%.txt.gz/.fastq.gz}"; done
 #Extend for loop to qsub the rest of the alignments
 #!/bin/bash                                                                                                                                                                                              
 DIR="/mnt/lustre/users/k1632479/"
-for FILE in "$DIR/ESC_NSC"*.fastq.gz; do
-hisat2 --dta -x "$DIR/grcm38/genome" -U "$FILE" -S | samtools view -bS > "${FILE/%.sam/.bam}"; done
+for FILE in "$DIR/ESC_NSC/"*.fastq.gz; do
+hisat2 --dta -x "$DIRgrcm38/genome" -U "$FILE" -S | samtools view -bS > "${FILE/%.fastq.gz/.bam}"; done
 
 
 
