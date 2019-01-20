@@ -141,13 +141,25 @@ wget ftp://ftp.ensembl.org/pub/release-95/fasta/mus_musculus/dna/*
 #download a gtf file
 wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M20/gencode.vM20.chr_patch_hapl_scaff.annotation.gtf.gz
 
-
+#saved in my home directory
+#!/bin/bash                                                                                                                                                                                             
+for FILE in /mnt/lustre/users/k1632479/STARreference/genome/*.fa.gz; do
+zcat "$FILE" > "${FILE/%.fa.gz/.fasta}"; done
 
 #need to run for loop to change zcat all files 
-#nafterwrds run STAR to the make index 
-/users/k1632479/tools/STAR-2.6.0a/source/STAR --runMode genomeGenerate \ --genomeDir ~/genomeDir \ --genomeFastaFiles ~/genome \ --sjdbGTFfile gencode.vM20.chr_patch_hapl_scaff.annotation.gtf \ --sjdbOverhang 99 \ -readFilesCommand zcat
+#afterwards run STAR to the make index 
+/users/k1632479/tools/STAR-2.6.0a/source/STAR --runMode genomeGenerate --genomeDir /mnt/lustre/users/k1632479/STARreference/genomeDir --genomeFastaFiles /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.15.fasta  Mus_musculus.GRCm38.dna.chromosome.3.fasta  Mus_musculus.GRCm38.dna.chromosome.X.fasta Mus_musculus.GRCm38.dna.chromosome.16.fasta Mus_musculus.GRCm38.dna.chromosome.4.fasta Mus_musculus.GRCm38.dna.chromosome.Y.fasta Mus_musculus.GRCm38.dna.chromosome.10.fasta Mus_musculus.GRCm38.dna.chromosome.17.fasta Mus_musculus.GRCm38.dna.chromosome.5.fasta Mus_musculus.GRCm38.dna.nonchromosomal.fasta Mus_musculus.GRCm38.dna.chromosome.11.fasta Mus_musculus.GRCm38.dna.chromosome.18.fasta Mus_musculus.GRCm38.dna.chromosome.6.fasta Mus_musculus.GRCm38.dna.chromosome.12.fasta Mus_musculus.GRCm38.dna.chromosome.19.fasta Mus_musculus.GRCm38.dna.chromosome.7.fasta Mus_musculus.GRCm38.dna.chromosome.13.fasta Mus_musculus.GRCm38.dna.chromosome.1.fasta Mus_musculus.GRCm38.dna.chromosome.8.fasta Mus_musculus.GRCm38.dna.chromosome.14.fasta Mus_musculus.GRCm38.dna.chromosome.2.fasta Mus_musculus.GRCm38.dna.chromosome.9.fasta --sjdbGTFfile /mnt/lustre/users/k1632479/STARreference/gencode.vM20.chr_patch_hapl_scaff.annotation.gtf --limitGenomeGenerateRAM=33523700437 --sjdbOverhang 99 
+
+#RunThreadN defines the number of threads to be used for genome generation, it has to be set to the number of avaiable cores on the server nodes
+#runMode directs STAR to run genome indices generation job
+#genomeDir path to the directory
+#genomeFastafiles- specifies one or more FASTA files with genome reference sequences 
+#sjdbGTFfile- where they extract splice junction information
+
+
 
 #to run STAR, making new qsub
+#need to change the sjdbOverhang as single end reads
 #do an explanation thing
 DIR="/mnt/lustre/users/k1632479"
 for FILE in "$DIR/ESC_NSC/"*.fastq.gz; do
