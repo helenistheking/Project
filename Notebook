@@ -1,6 +1,11 @@
 15/01/12
 
-mv desired files from computer to rosalind server
+rsync desired files from computer to rosalind server
+better
+
+Check sums before hand 
+md5sum *txt.gz > checklist.chk
+md5sum-c checklist.chk
 
 using ssh 
 #already installed hisat2 and samtools programs onto /tools in home directory 
@@ -48,13 +53,18 @@ wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/grcm38.tar.gz
 hisat2 --dta -x grcm38_snp_tran/genome_tran -U ESC_NSC/13799X1_161209_D00294_0278_BCAEAJANXX_1.fastq.gz -S | samtools view -bS > 13799X1_1.bam 
 
 
-hisat2 --dta -x grcm38/genome -U ESC_NSC/13799X1_161209_D00294_0278_BCAEAJANXX_1.fastq.gz -S | samtools view -bS > 13799X1_1.bam 
+hisat2 --dta -x /mnt/lustre/users/k1632479/grcm38/genome -U /mnt/lustre/users/k1632479/ESC_NSC/13799X1_161209_D00294_0278_BCAEAJANXX_1.fastq.gz -S /mnt/lustre/users/k1632479/ESC_NSC/13799X1_test.sam 
+samtools sort -@ 8 -o /mnt/lustre/users/k1632479/ESC_NSC/13799X1_test.bam /mnt/lustre/users/k1632479/ESC_NSC/13799X1_test.sam
+qsubHISAT2test.sh
+
+RESULTS
 52586374 reads; of these:
   52586374 (100.00%) were unpaired; of these:
-    3349906 (6.37%) aligned 0 times
-    38497861 (73.21%) aligned exactly 1 time
-    10738607 (20.42%) aligned >1 times
-93.63% overall alignment rate
+    4123360 (7.84%) aligned 0 times
+    33940663 (64.54%) aligned exactly 1 time
+    14522351 (27.62%) aligned >1 times
+92.16% overall alignment rate
+
 
 #IT WORKED!!!!
 
@@ -70,11 +80,23 @@ DIR="/mnt/lustre/users/k1632479/ESC_NSC/"
 for FILE in "$DIR"*.txt.gz; do
 mv "$FILE" "${FILE/%.txt.gz/.fastq.gz}"; done
 
+
+module load bioinformatics/hisat2/2.0.4
+module load bioinformatics/STAR/2.5.2a
+module load bioinformatics/samtools/1.9
+
+
+DIR="/mnt/lustre/users/k1632479"
+for FILE in "$DIR/ESC_NSC/"*.fastq.gz; do
+hisat2 --dta -x ${DIR}/grcm38/genome -U "$FILE" -S "${FILE/%.fastq.qz/.sam}";
+samtools sort -@ 8 -o "${FILE/%.fastq.gz/.bam}" "${FILE/%.fastq.qz/.sam}"; done
+
 #Extend for loop to qsub the rest of the alignments
 #!/bin/bash                                                                                                                                                                                              
 DIR="/mnt/lustre/users/k1632479/"
 for FILE in "$DIR/ESC_NSC/"*.fastq.gz; do
-hisat2 --dta -x "$DIRgrcm38/genome" -U "$FILE" -S | samtools view -bS > "${FILE/%.fastq.gz/.bam}"; done
+hisat2 --dta -x "$DIRgrcm38/genome" -U "$FILE" -S "${FILE/%.fastq.gz/.sam}";
+samtools sort -@ 8 -o "${FILE/%.fastq.gz/.sam}" > "${FILE/%.fastq.gz/.bam}"; done
  
 #-p 2 : This tells hisat2 that it can use 2 CPU cores on the machine. Short read mapping scales very efficiently across cores so if you have more cores available then you should use them to speed up your analysis.
 #-U : Specifies the fastq file of sequence reads to map. If you had paired end data and therefore 2 input files you would use -1 and -2 to specify the two files instead of –U
@@ -148,20 +170,28 @@ zcat "$FILE" > "${FILE/%.fa.gz/.fasta}"; done
 
 #need to run for loop to change zcat all files 
 #afterwards run STAR to the make index 
-/users/k1632479/tools/STAR-2.6.0a/source/STAR --runMode genomeGenerate --genomeDir /mnt/lustre/users/k1632479/STARreference/genomeDir --genomeFastaFiles /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.15.fasta  Mus_musculus.GRCm38.dna.chromosome.3.fasta  Mus_musculus.GRCm38.dna.chromosome.X.fasta Mus_musculus.GRCm38.dna.chromosome.16.fasta Mus_musculus.GRCm38.dna.chromosome.4.fasta Mus_musculus.GRCm38.dna.chromosome.Y.fasta Mus_musculus.GRCm38.dna.chromosome.10.fasta Mus_musculus.GRCm38.dna.chromosome.17.fasta Mus_musculus.GRCm38.dna.chromosome.5.fasta Mus_musculus.GRCm38.dna.nonchromosomal.fasta Mus_musculus.GRCm38.dna.chromosome.11.fasta Mus_musculus.GRCm38.dna.chromosome.18.fasta Mus_musculus.GRCm38.dna.chromosome.6.fasta Mus_musculus.GRCm38.dna.chromosome.12.fasta Mus_musculus.GRCm38.dna.chromosome.19.fasta Mus_musculus.GRCm38.dna.chromosome.7.fasta Mus_musculus.GRCm38.dna.chromosome.13.fasta Mus_musculus.GRCm38.dna.chromosome.1.fasta Mus_musculus.GRCm38.dna.chromosome.8.fasta Mus_musculus.GRCm38.dna.chromosome.14.fasta Mus_musculus.GRCm38.dna.chromosome.2.fasta Mus_musculus.GRCm38.dna.chromosome.9.fasta --sjdbGTFfile /mnt/lustre/users/k1632479/STARreference/gencode.vM20.chr_patch_hapl_scaff.annotation.gtf --limitGenomeGenerateRAM=33523700437 --sjdbOverhang 99 
+/users/k1632479/tools/STAR-2.6.0a/source/STAR --runMode genomeGenerate --genomeDir /mnt/lustre/users/k1632479/STARreference/genomeDir --genomeFastaFiles /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.15.fasta  /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.3.fasta  /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.X.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.16.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.4.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.Y.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.10.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.17.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.5.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.nonchromosomal.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.11.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.18.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.6.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.12.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.19.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.7.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.13.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.1.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.8.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.14.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.2.fasta /mnt/lustre/users/k1632479/STARreference/genome/Mus_musculus.GRCm38.dna.chromosome.9.fasta
+--sjdbGTFfile /mnt/lustre/users/k1632479/STARreference/gencode.vM20.chr_patch_hapl_scaff.annotation.gtf --limitGenomeGenerateRAM=33523700437 --sjdbOverhang 99 
 
 #RunThreadN defines the number of threads to be used for genome generation, it has to be set to the number of avaiable cores on the server nodes
+#cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l. will count the number 
 #runMode directs STAR to run genome indices generation job
 #genomeDir path to the directory
 #genomeFastafiles- specifies one or more FASTA files with genome reference sequences 
 #sjdbGTFfile- where they extract splice junction information
-
+#genomeChrBinNbits = min(18, log2(GenomeLength/NumberOfReferences)). e.g. 3~gigaBase genome with 100,000 chromosomes/scaffolds, this is equal to 15.
+#log2(20,000/138)=7.14
+#count number of references in genome with file grep "^>" Genome.fasta | wc -l
+#this will reduce RAM consumption 
 
 
 #to run STAR, making new qsub
 #need to change the sjdbOverhang as single end reads
-#do an explanation thing
+#install samtools using
+module avail
+module load bioinformatics/samtools/1.9  
+
 DIR="/mnt/lustre/users/k1632479"
 for FILE in "$DIR/ESC_NSC/"*.fastq.gz; do
-/users/k1632479/tools/STAR-2.6.0a/source/STAR --genomeDir ~/genomeDir \ --readFilesIn "$FILE" \ --sjdbGTFfile gencode.vM20.chr_patch_hapl_scaff.annotation.gtf  \ --sjdbOverhang 99 \ --runThreadN 12 \ --readFilesCommand zcat| samtools view -bS > "${FILE/%.fastq.gz/_STAR.bam}"; done
+/users/k1632479/tools/STAR-2.6.0a/source/STAR --genomeDir /mnt/lustre/users/k1632479/STARreference/genomeDir \ --readFilesIn "$FILE" \ --sjdbGTFfile gencode.vM20.chr_patch_hapl_scaff.annotation.gtf  \ --sjdbOverhang 99 \ --runThreadN 16 \ --readFilesCommand zcat| samtools view -bS > "${FILE/%.fastq.gz/_STAR.bam}"; done
 
