@@ -5,7 +5,18 @@ better
 
 Check sums before hand 
 md5sum *txt.gz > checklist.chk
-md5sum-c checklist.chk
+md5sum -c checklist.chk
+13799X10_161209_D00294_0278_BCAEAJANXX_2.txt.gz: OK
+13799X1_161209_D00294_0278_BCAEAJANXX_1.txt.gz: OK
+13799X2_161209_D00294_0278_BCAEAJANXX_1.txt.gz: OK
+13799X3_161209_D00294_0278_BCAEAJANXX_1.txt.gz: OK
+13799X4_161209_D00294_0278_BCAEAJANXX_1.txt.gz: OK
+13799X5_161209_D00294_0278_BCAEAJANXX_1.txt.gz: OK
+13799X6_161209_D00294_0278_BCAEAJANXX_2.txt.gz: OK
+13799X7_161209_D00294_0278_BCAEAJANXX_2.txt.gz: OK
+13799X8_161209_D00294_0278_BCAEAJANXX_2.txt.gz: OK
+13799X9_161209_D00294_0278_BCAEAJANXX_2.txt.gz: OK
+
 
 using ssh 
 #already installed hisat2 and samtools programs onto /tools in home directory 
@@ -76,20 +87,17 @@ done
 
 #do a loop to change all .txt.gz files into .fastq.gz Saved as bashtest
 #!/bin/bash                                                                                                                                                                                              
-DIR="/mnt/lustre/users/k1632479/ESC_NSC/"
+DIR="/mnt/lustre/users/k1632479/ESC_NSC/"\
 for FILE in "$DIR"*.txt.gz; do
 mv "$FILE" "${FILE/%.txt.gz/.fastq.gz}"; done
 
+tar -xvf grcm38.tar
 
 module load bioinformatics/hisat2/2.0.4
 module load bioinformatics/STAR/2.5.2a
 module load bioinformatics/samtools/1.9
 
 
-DIR="/mnt/lustre/users/k1632479"
-for FILE in "$DIR/ESC_NSC/"*.fastq.gz; do
-hisat2 --dta -x ${DIR}/grcm38/genome -U "$FILE" -S "${FILE/%.fastq.qz/.sam}";
-samtools sort -@ 8 -o "${FILE/%.fastq.gz/.bam}" "${FILE/%.fastq.qz/.sam}"; done
 
 #Extend for loop to qsub the rest of the alignments
 #!/bin/bash                                                                                                                                                                                              
@@ -107,27 +115,15 @@ samtools sort -@ 8 -o "${FILE/%.fastq.gz/.sam}" > "${FILE/%.fastq.gz/.bam}"; don
 
 #The HISAT2 indexes for the human genome include only primary assembly.  If you choose to include alternative sequences introduced in GRCh38 and build your own HISAT2 indexes, then please be aware that those alternative sequences are nearly identical to the primary assembly in GRCh38 and as a result some reads may map to many more locations compared to when using the primary assembly only.  HISAT2 often skips those multi-mapped reads if the number of potential locations is more than the value specified by the -k option.  You may want to use a higher value for the -k option to resolve the issue.
  #to begin with want a for loop from home directory to change .txt.gz files to .fastq.gz files
- 
- 52586374 reads; of these:
-  52586374 (100.00%) were unpaired; of these:
-    3349906 (6.37%) aligned 0 times
-    38497861 (73.21%) aligned exactly 1 time
-    10738607 (20.42%) aligned >1 times
-93.63% overall alignment rate
-45871186 reads; of these:
-  45871186 (100.00%) were unpaired; of these:
-    4082514 (8.90%) aligned 0 times
-    34166899 (74.48%) aligned exactly 1 time
-    7621773 (16.62%) aligned >1 times
-91.10% overall alignment rate
-
-gzip: /mnt/lustre/users/k1632479/ESC_NSC/13799X3_161209_D00294_0278_BCAEAJANXX_1.fastq.gz: invalid compressed data--format violated
-37393514 reads; of these:
-  37393514 (100.00%) were unpaired; of these:
-    2486783 (6.65%) aligned 0 times
-    28134985 (75.24%) aligned exactly 1 time
-    6771746 (18.11%) aligned >1 times
-93.35% overall alignment rate
+#!/bin/bash
+DIR="/mnt/lustre/users/k1632479"
+for FILE in "$DIR/ESC_NSC/"*.fastq.gz; do
+hisat2 --dta -x ${DIR}/grcm38/genome -U "$FILE" -S "${FILE/%.fastq.qz/.sam}";
+samtools sort -@ 8 -o "${FILE/%.fastq.gz/.bam}" "${FILE/%.fastq.qz/.sam}"; done
+    5218784 (10.18%) aligned 0 times
+    41092812 (80.17%) aligned exactly 1 time
+    4947227 (9.65%) aligned >1 times
+89.82% overall alignment rate
 46860228 reads; of these:
   46860228 (100.00%) were unpaired; of these:
     2003054 (4.27%) aligned 0 times
@@ -146,6 +142,21 @@ gzip: /mnt/lustre/users/k1632479/ESC_NSC/13799X3_161209_D00294_0278_BCAEAJANXX_1
     38978283 (84.58%) aligned exactly 1 time
     5372668 (11.66%) aligned >1 times
 96.24% overall alignment rate
+48607544 reads; of these:
+  48607544 (100.00%) were unpaired; of these:
+    1867248 (3.84%) aligned 0 times
+    40349854 (83.01%) aligned exactly 1 time
+    6390442 (13.15%) aligned >1 times
+96.16% overall alignment rate
+[bam_sort_core] merging from 16 files and 8 in-memory blocks...
+[bam_sort_core] merging from 16 files and 8 in-memory blocks...
+[bam_sort_core] merging from 16 files and 8 in-memory blocks...
+[bam_sort_core] merging from 16 files and 8 in-memory blocks...
+[bam_sort_core] merging from 16 files and 8 in-memory blocks...
+[bam_sort_core] merging from 16 files and 8 in-memory blocks...
+[bam_sort_core] merging from 16 files and 8 in-memory blocks...
+[bam_sort_core] merging from 16 files and 8 in-memory blocks...
+[bam_sort_core] merging from 16 files and 8 in-memory blocks...
  
 #to check the run time of hisat2
 qacct -o k1632479 -j 4396427
@@ -189,9 +200,12 @@ zcat "$FILE" > "${FILE/%.fa.gz/.fasta}"; done
 #need to change the sjdbOverhang as single end reads
 #install samtools using
 module avail
-module load bioinformatics/samtools/1.9  
+module load bioinformatics/STAR/2.5.2a
 
+#!/bin/bash                                                                                          
 DIR="/mnt/lustre/users/k1632479"
 for FILE in "$DIR/ESC_NSC/"*.fastq.gz; do
-/users/k1632479/tools/STAR-2.6.0a/source/STAR --genomeDir /mnt/lustre/users/k1632479/STARreference/genomeDir \ --readFilesIn "$FILE" \ --sjdbGTFfile gencode.vM20.chr_patch_hapl_scaff.annotation.gtf  \ --sjdbOverhang 99 \ --runThreadN 16 \ --readFilesCommand zcat| samtools view -bS > "${FILE/%.fastq.gz/_STAR.bam}"; done
-
+STAR --genomeDir /mnt/lustre/users/k1632479/STARreference/g\
+enomeDir \ --readFilesIn $FILE \ --sjdbGTFfile gencode.vM20.chr_patch_hapl_scaff.annotation.gtf \ \
+ --runThreadN 16 \ --readFilesCommand zcat| samtools sort -@ -8 > "${FILE/%.fastq.gz/_STAR.bam}"; do\
+ne
