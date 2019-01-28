@@ -198,14 +198,49 @@ zcat "$FILE" > "${FILE/%.fa.gz/.fasta}"; done
 
 #to run STAR, making new qsub
 #need to change the sjdbOverhang as single end reads
-#install samtools using
+#install by first checking using
 module avail
+
+
+shellscipt saved as STAR_NSC.sh
+
+#!/bin/bash
+
+# number of cores used
+#$ -pe smp 4
+
+# prefix
+#$ -N STAR
+
+# How much memory?
+#$ -l h_vmem=4G
+
+# How long will it run?
+#$ -l h_rt=24:00:00
+
+# Set the working directory 
+#$ -cwd
+
 module load bioinformatics/STAR/2.5.2a
 
-#!/bin/bash                                                                                          
 DIR="/mnt/lustre/users/k1632479"
+run_Mode="alignReads"
+genome_Dir="$DIR/STARreference/genomeDir"
+GTF_file="$DIR/STARreference/gencode.vM20.chr_patch_hapl_scaff.annotation.gtf"
+Sam_type="BAM SortedByCoordinate"
+
+
 for FILE in "$DIR/ESC_NSC/"*.fastq.gz; do
-STAR --genomeDir /mnt/lustre/users/k1632479/STARreference/g\
-enomeDir \ --readFilesIn $FILE \ --sjdbGTFfile gencode.vM20.chr_patch_hapl_scaff.annotation.gtf \ \
- --runThreadN 16 \ --readFilesCommand zcat| samtools sort -@ -8 > "${FILE/%.fastq.gz/_STAR.bam}"; do\
-ne
+    STAR --runMode "$run_Mode" --genomeDir "$genome_Dir" --readFilesIn "$FILE" --sjdbGTFfile "$GTF_file" --runThreadN 8 --readFilesCommand zcat --outFileNamePrefix "$FILE" --outSAMtype BAM SortedByCoordinate ; done
+
+Jan 28 12:00:59 ..... started STAR run
+Jan 28 12:00:59 ..... loading genome
+Jan 28 12:01:35 ..... processing annotations GTF
+Jan 28 12:02:00 ..... inserting junctions into the genome indices
+Jan 28 12:03:11 ..... started mapping
+Jan 28 12:05:43 ..... started sorting BAM
+Jan 28 12:06:12 ..... finished successfully
+successful
+
+Time taken: 12:00:59
+13:02:55 
