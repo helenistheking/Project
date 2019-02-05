@@ -264,9 +264,62 @@ Jan 28 12:05:43 ..... started sorting BAM
 Jan 28 12:06:12 ..... finished successfully
 successful
 
-qacct -j 
+qacct -o k1632479 
 
-Stringtie
+qname        HighMemShortterm.q  
+hostname     nodea02.prv.rosalind.compute.estate
+group        k1632479            
+owner        k1632479            
+project      NONE                
+department   defaultdepartment   
+jobname      STAR                
+jobnumber    4408080             
+taskid       undefined
+account      sge                 
+priority     0                   
+qsub_time    Mon Feb  4 15:45:08 2019
+start_time   Mon Feb  4 15:45:08 2019
+end_time     Mon Feb  4 17:54:08 2019
+granted_pe   smp                 
+slots        6                   
+failed       0    
+exit_status  0                   
+ru_wallclock 7740         
+ru_utime     13719.930    
+ru_stime     5428.429     
+ru_maxrss    29877756            
+ru_ixrss     0                   
+ru_ismrss    0                   
+ru_idrss     0                   
+ru_isrss     0                   
+ru_minflt    47167195            
+ru_majflt    144                 
+ru_nswap     0                   
+ru_inblock   24296               
+ru_oublock   323282248           
+ru_msgsnd    0                   
+ru_msgrcv    0                   
+ru_nsignals  0                   
+ru_nvcsw     2491912             
+ru_nivcsw    1226884             
+cpu          19777.730    
+mem          508973.597        
+io           1364.999          
+iow          0.000             
+maxvmem      29.560G
+arid         undefined
+
+
+
+#Stringtie transcript assembly and quantification
+#relative abundance and reconstructions of isoforms expressed from each gene 
+#not all are known
+#assembling each locus into as many isoforms 
+#begins with the most highly expressed transcript assembles and quanitates simutaneously
+#then removes the reads associated with that transcript and repeats the process assembling more isoforms until all the reads are used or until number of reads is below the level of transcriptional noise
+#computes abundance and exon-intron structure at the same time
+
+
 
 DIR=/mnt/lustre/users/k1632479/ESC_NSC/
 
