@@ -318,6 +318,8 @@ arid         undefined
 #begins with the most highly expressed transcript assembles and quanitates simutaneously
 #then removes the reads associated with that transcript and repeats the process assembling more isoforms until all the reads are used or until number of reads is below the level of transcriptional noise
 #computes abundance and exon-intron structure at the same time
+#stringtie netwrok flow algorithm computational run-tie efficences- 8GB of RAM needed at most 
+
 
 
 
@@ -332,6 +334,10 @@ for FILE2 in "$DIR"HISATbamfiles/stringtie/*.gtf; do array_exp+=($FILE2); done
 stringtie -i --merge -p 8 -G /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf -o stringtie_merged.gtf ${array_exp[*]}
 
 #gffcompare
+#used to compare the lists of genes and transcripts same GFT format with reference and merged gtf file- displays te sensitivity and the precision
+#sensitivity means the proportion of genes from the annotation correctly reconstructed 
+#precision proportion of the output that overlaps the annotation
+#need to rerun after the stringtie merge of the file 
 #INSTALLATION
  git clone git://github.com/gpertea/gclib
  git clone git://github.com/gpertea/gffcompare
