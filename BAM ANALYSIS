@@ -2,7 +2,30 @@
 
 
 
+#must first load samtools, create indices 
+module load bioinformatics/samtools/1.9
 
+#samtools index in shell script
+
+#rsync indices of both STAR and HISAT2 
+
+DIR=home/emtraining/bam/BAM
+#1 ESC_DMSO
+Rscript /home/emtraining/bam/BAM/runCsaw.R "$DIR"/STAR/13799X1_161209_D00294_0278_BCAEAJANXX_1.fastq.gzAligned.sortedByCoord.out.bam "$DIR"/HISAT2/13799X1_161209_D00294_0278_BCAEAJANXX_1_HISAT.bam
+#2 ESC_CHX
+Rscript /home/emtraining/bam/BAM/runCsaw.R "$DIR"/STAR/13799X2_161209_D00294_0278_BCAEAJANXX_1.fastq.gzAligned.sortedByCoord.out.bam "$DIR"/HISAT2/13799X2_161209_D00294_0278_BCAEAJANXX_1_HISAT.bam
+#3 ESC_Total
+Rscript /home/emtraining/bam/BAM/runCsaw.R "$DIR"/STAR/13799X3_161209_D00294_0278_BCAEAJANXX_1.fastq.gzAligned.sortedByCoord.out.bam "$DIR"/HISAT2/13799X3_161209_D00294_0278_BCAEAJANXX_1_HISAT.bam
+#4 ESC_Cyto
+Rscript /home/emtraining/bam/BAM/runCsaw.R "$DIR"/STAR/13799X4_161209_D00294_0278_BCAEAJANXX_1.fastq.gzAligned.sortedByCoord.out.bam "$DIR"/HISAT2/13799X4_161209_D00294_0278_BCAEAJANXX_1_HISAT.bam
+#6 NSC_DMSO
+Rscript /home/emtraining/bam/BAM/runCsaw.R "$DIR"/STAR/13799X6_161209_D00294_0278_BCAEAJANXX_1.fastq.gzAligned.sortedByCoord.out.bam "$DIR"/HISAT2/13799X6_161209_D00294_0278_BCAEAJANXX_1_HISAT.bam
+#7 NSC_CHX
+Rscript /home/emtraining/bam/BAM/runCsaw.R "$DIR"/STAR/13799X7_161209_D00294_0278_BCAEAJANXX_1.fastq.gzAligned.sortedByCoord.out.bam "$DIR"/HISAT2/13799X7_161209_D00294_0278_BCAEAJANXX_1_HISAT.bam
+#8 NSC_Total
+Rscript /home/emtraining/bam/BAM/runCsaw.R "$DIR"/STAR/13799X8_161209_D00294_0278_BCAEAJANXX_1.fastq.gzAligned.sortedByCoord.out.bam "$DIR"/HISAT2/13799X8_161209_D00294_0278_BCAEAJANXX_1_HISAT.bam
+#9 NSC_Cyto
+Rscript /home/emtraining/bam/BAM/runCsaw.R "$DIR"/STAR/13799X9_161209_D00294_0278_BCAEAJANXX_1.fastq.gzAligned.sortedByCoord.out.bam "$DIR"/HISAT2/13799X9_161209_D00294_0278_BCAEAJANXX_1_HISAT.bam
 
 
 #bamDiff
