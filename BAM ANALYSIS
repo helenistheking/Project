@@ -1,5 +1,6 @@
 
 
+rsync /home/emtraining/Helen/13799R/Fastq/ESC_NSC/ k1632479@rosalind.kcl.ac.uk:/mnt/lustre/k1632479/ESC_NSC/
 
 
 #must first load samtools, create indices 
