@@ -57,8 +57,7 @@ zcat 13799X1_161209_D00294_0278_BCAEAJANXX_1.fastq.gz | grep @HWI-D00294 | head 
 #don't need to create own 
 wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/grcm38.tar.gz
  
- gunzip grcm38.tar.gz
- tar -xvf grcm38.tar 
+ tar -xzvf grcm38.tar 
  
  #do trial alignment and conversion of sam to bam
 hisat2 --dta -x grcm38_snp_tran/genome_tran -U ESC_NSC/13799X1_161209_D00294_0278_BCAEAJANXX_1.fastq.gz -S | samtools view -bS > 13799X1_1.bam 
@@ -161,8 +160,48 @@ samtools sort -@ 8 -o "${FILE/%.fastq.gz/.bam}" "${FILE/%.fastq.qz/.sam}"; done
 #to check the run time of hisat2
 qacct -o k1632479 -j 4396427
 
-start_time   Thu Jan 17 11:25:31 2019
-end_time     Thu Jan 17 13:29:17 2019
+qname        HighMemShortterm.q  
+hostname     nodea05.prv.rosalind.compute.estate
+group        k1632479            
+owner        k1632479            
+project      NONE                
+department   defaultdepartment   
+jobname      HISAT2              
+jobnumber    4411103             
+taskid       undefined
+account      sge                 
+priority     0                   
+qsub_time    Thu Feb  7 17:23:12 2019
+start_time   Thu Feb  7 17:23:15 2019
+end_time     Fri Feb  8 00:36:41 2019
+granted_pe   smp                 
+slots        4                   
+failed       0    
+exit_status  0                   
+ru_wallclock 26006        
+ru_utime     15509.274    
+ru_stime     792.680      
+ru_maxrss    7163508             
+ru_ixrss     0                   
+ru_ismrss    0                   
+ru_idrss     0                   
+ru_isrss     0                   
+ru_minflt    78031236            
+ru_majflt    67                  
+ru_nswap     0                   
+ru_inblock   25192               
+ru_oublock   300878400           
+ru_msgsnd    0                   
+ru_msgrcv    0                   
+ru_nsignals  0                   
+ru_nvcsw     9433011             
+ru_nivcsw    13838595            
+cpu          17437.210    
+mem          78262.634         
+io           1004.194          
+iow          0.000             
+maxvmem      7.548G
+arid         undefined
 
 #load STAR 
 #first update gcc 
@@ -346,3 +385,77 @@ stringtie -i --merge -p 8 -G /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_muscu
   
   #examine how the transcripts compare with the reference annotation
  /users/k1632479/tools/gffcompare/gffcompare -r /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf -G -o merged /users/k1632479/brc_scratch/ESC_NSC/HISATbamfiles/stringtie/stringtie_merged.gtf
+
+##gffcompare folder 
+#= Summary for dataset: /users/k1632479/brc_scratch/ESC_NSC/HISATbamfiles/strin\
+gtie/stringtie_merged.gtf
+#     Query mRNAs :  179781 in   60073 loci  (146443 multi-exon transcripts)
+#            (20738 multi-transcript loci, ~3.0 transcripts per locus)
+# Reference mRNAs :  138139 in   52980 loci  (111832 multi-exon)
+# Super-loci w/ reference transcripts:    46950
+#-----------------| Sensitivity | Precision  |
+        Base level:   100.0     |    86.8    |
+        Exon level:   100.0     |    89.4    |
+      Intron level:    99.5     |    93.3    |
+Intron chain level:   100.0     |    76.4    |
+  Transcript level:   100.0     |    76.8    |
+       Locus level:   100.0     |    87.3    |
+
+     Matching intron chains:  111832
+       Matching transcripts:  138139
+              Matching loci:   52980
+
+          Missed exons:       0/439078  (  0.0%)
+           Novel exons:   15702/510757  (  3.1%)
+        Missed introns:    1378/281467  (  0.5%)
+         Novel introns:    3120/300114  (  1.0%)
+           Missed loci:       0/52980   (  0.0%)
+            Novel loci:    7407/60073   ( 12.3%)
+
+ Total union super-loci across all input datasets: 60073
+179781 out of 179781 consensus transcripts written in merged.annotated.gtf (0 d\
+iscarded as redundant)
+
+##sensitivity- proportion of genes from the annotation that are correctly reconstructed
+##precision- the proportion of the output that overlaps the annotation - relative to the input annotatin
+
+stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/HISATbamfiles/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/HISATbamfiles/13799X2_161209_D00294_0278_BCAEAJANXX_1_HISAT.gtf /mnt/lustre/users/k1632479/ESC_NSC/HISATbamfiles/13799X2_161209_D00294_0278_BCAEAJANXX_1_HISAT.bam
+
+
+$ python prepDE.py
+List of GTFs sample IDs and paths (lst.txt)
+
+$ python prepDE.py -i lst.txt
+
+
+#Install R and DESeq2. Upon installing R, install DESeq2 on R:
+source("https://bioconductor.org/biocLite.R")
+biocLite("DESeq2")
+
+#Import DESeq2 library in R
+library("DESeq2")
+
+#Load gene(/transcript) count matrix and labels
+
+countData <- as.matrix(read.csv("gene_count_matrix.csv", row.names="gene_id"))
+colData <- read.csv(PHENO_DATA, sep="\t", row.names=1)
+##Note: The PHENO_DATA file contains information on each sample, e.g., sex or population. The exact way to import this depends on the format of the file.
+#Check all sample IDs in colData are also in CountData and match their orders
+all(rownames(colData) %in% colnames(countData))
+
+#should be TRUE
+
+countData <- countData[, rownames(colData)]
+all(rownames(colData) == colnames(countData))
+
+
+#Create a DESeqDataSet from count matrix and labels
+dds <- DESeqDataSetFromMatrix(countData = countData, 
+        colData = colData, design = ~ CHOOSE_FEATURE)
+        
+#Run the default analysis for DESeq2 and generate results table
+dds <- DESeq(dds)
+res <- results(dds)
+
+#Sort by adjusted p-value and display
+(resOrdered <- res[order(res$padj), ])
