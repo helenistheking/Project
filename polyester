@@ -1,6 +1,17 @@
+#input files must be gtf file and whole fasta file of the genome
+#as per usual dont use toplevel (contains haplotype information- with aligners cause problems with multimapping) but use primary assembly 
+#dna_sm - Repeats soft-masked (converts repeat nucleotides to lowercase)and rougly shows where repeat regions are 
+grep -v '^nonsense_mediated_decay' Mus_musculus.GRCm38.95.gtf > Mus_musculus.GRCm38.95_no_NMD.gtf
+
+
+wget ftp://ftp.ensembl.org/pub/release-95/fasta/mus_musculus//dna/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa.gz
+
+
+
+
+
 #install polyester and module load R
 
 #source("http://bioconductor.org/biocLite.R")
 #biocLite("polyester")
-
 
