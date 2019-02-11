@@ -158,49 +158,49 @@ samtools sort -@ 8 -o "${FILE/%.fastq.gz/.bam}" "${FILE/%.fastq.qz/.sam}"; done
 [bam_sort_core] merging from 16 files and 8 in-memory blocks...
  
 #to check the run time of hisat2
-qacct -o k1632479 -j 4396427
+qacct -o k1632479 -j 4415166
 
 qname        HighMemShortterm.q  
-hostname     nodea05.prv.rosalind.compute.estate
+hostname     nodea11.prv.rosalind.compute.estate
 group        k1632479            
 owner        k1632479            
 project      NONE                
 department   defaultdepartment   
 jobname      HISAT2              
-jobnumber    4411103             
+jobnumber    4415166             
 taskid       undefined
 account      sge                 
 priority     0                   
-qsub_time    Thu Feb  7 17:23:12 2019
-start_time   Thu Feb  7 17:23:15 2019
-end_time     Fri Feb  8 00:36:41 2019
+qsub_time    Mon Feb 11 10:13:10 2019
+start_time   Mon Feb 11 10:13:10 2019
+end_time     Mon Feb 11 13:10:48 2019
 granted_pe   smp                 
-slots        4                   
+slots        7                   
 failed       0    
 exit_status  0                   
-ru_wallclock 26006        
-ru_utime     15509.274    
-ru_stime     792.680      
-ru_maxrss    7163508             
+ru_wallclock 10658        
+ru_utime     10032.783    
+ru_stime     251.534      
+ru_maxrss    4084664             
 ru_ixrss     0                   
 ru_ismrss    0                   
 ru_idrss     0                   
 ru_isrss     0                   
-ru_minflt    78031236            
-ru_majflt    67                  
+ru_minflt    4837010             
+ru_majflt    11                  
 ru_nswap     0                   
-ru_inblock   25192               
-ru_oublock   300878400           
+ru_inblock   8112                
+ru_oublock   244888280           
 ru_msgsnd    0                   
 ru_msgrcv    0                   
 ru_nsignals  0                   
-ru_nvcsw     9433011             
-ru_nivcsw    13838595            
-cpu          17437.210    
-mem          78262.634         
-io           1004.194          
+ru_nvcsw     14109194            
+ru_nivcsw    21727               
+cpu          11409.830    
+mem          40510.710         
+io           692.468           
 iow          0.000             
-maxvmem      7.548G
+maxvmem      4.295G
 arid         undefined
 
 #load STAR 
