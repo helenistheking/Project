@@ -1,0 +1,6 @@
+#install polyester and module load R
+
+#source("http://bioconductor.org/biocLite.R")
+#biocLite("polyester")
+
+
