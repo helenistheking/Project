@@ -6,12 +6,48 @@ grep -v '^nonsense_mediated_decay' Mus_musculus.GRCm38.95.gtf > Mus_musculus.GRC
 
 wget ftp://ftp.ensembl.org/pub/release-95/fasta/mus_musculus//dna/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa.gz
 
+cd tools
+git clone git://github.com/gpertea/gclib
+git clone git://github.com/gpertea/gffread
+cd gffread
+make release
+
+#using gffread function to make the transcript fasta file
+#gffread can also be used to generate a FASTA file with the DNA sequences for all transcripts in a GFF file. For this operation a fasta file with the genomic sequences have to be provided as well. For example, one might want to extract the sequence of all transfrags assembled from a Cufflinks assembly session. This can be accomplished with a command line like this:
+#don't think I will need this
+
+tools/gffread/gffread -w /mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm38_transcripts.fa -g /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf
+tools/gffread/gffread -w /mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm38_no_NMD_transcripts.fa -g /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95_no_NMD.gtf
 
 
-
-
+#for polyester I am going to load 
 #install polyester and module load R
+module load general/R/3.5.0
+R
 
 #source("http://bioconductor.org/biocLite.R")
 #biocLite("polyester")
+library("polyester")
+
+#We also provide a function simulate_experiment_empirical that takes a real transcript expression matrix (in FPKM or RPKM units) and corresponding annotation to simulate an experiment with 
+#abundances and differential expression fold changes similar to those given in the expression matrix. This function is compatible with the Ballgown package, or you can simply provide a transcript-by-replicate 
+#expression matrix generated with your favorite abundance estimation software.
+
+library(ballgown)
+data(bg)
+bg = subset(bg, "chr=='22'")
+     
+# load gtf file for annotation:
+#gtfpath = system.file('/mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf', package='polyester')
+
+#gtf = subset(gffRead(gtfpath), seqname=='22')
+     
+# load chromosome sequence corresponding to gtf file (just for this example)
+#system('wget https://www.dropbox.com/s/04i6msi9vu2snif/chr22seq.rda')
+#load('chr22seq.rda')
+#names(chr22seq) = '22'
+     
+# simulate reads based on this experiment's FPKMs
+simulate_experiment_empirical(bg, grouplabels=pData(bg)$group, gtf='/mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf',
+    seqpath=chr22seq, mean_rps=5000, outdir='empirical_reads', seed=1247)
 
