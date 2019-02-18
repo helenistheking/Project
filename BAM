@@ -378,10 +378,10 @@ stringtie -i --merge -p 8 -G /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_muscu
 #precision proportion of the output that overlaps the annotation
 #need to rerun after the stringtie merge of the file 
 #INSTALLATION
- git clone git://github.com/gpertea/gclib
- git clone git://github.com/gpertea/gffcompare
-  cd gffcompare
-  make release
+git clone git://github.com/gpertea/gclib
+git clone git://github.com/gpertea/gffcompare
+cd gffcompare
+make release
   
   #examine how the transcripts compare with the reference annotation
  /users/k1632479/tools/gffcompare/gffcompare -r /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf -G -o merged /users/k1632479/brc_scratch/ESC_NSC/HISATbamfiles/stringtie/stringtie_merged.gtf
@@ -423,6 +423,7 @@ stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/HISATbamfiles/stringt
 
 
 $ python prepDE.py
+
 List of GTFs sample IDs and paths (lst.txt)
 
 $ python prepDE.py -i lst.txt
@@ -459,3 +460,44 @@ res <- results(dds)
 
 #Sort by adjusted p-value and display
 (resOrdered <- res[order(res$padj), ])
+
+
+
+
+#Repeating for STAR scripts
+/users/k1632479/tools/gffcompare/gffcompare -r /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf -G -o merged /users/k1632479/brc_scratch/ESC_NSC/STAR/stringtie/stringtie_merged.gtf
+
+
+
+# Super-loci w/ reference transcripts:    47611
+#-----------------| Sensitivity | Precision  |
+        Base level:   100.0     |    82.4    |
+        Exon level:   100.0     |    95.7    |
+      Intron level:    99.5     |    99.5    |
+Intron chain level:   100.0     |    99.5    |
+  Transcript level:   100.0     |    87.2    |
+       Locus level:   100.0     |    78.6    |
+
+     Matching intron chains:  111832
+       Matching transcripts:  138139
+              Matching loci:   52980
+
+          Missed exons:       0/439078  (  0.0%)
+           Novel exons:   14373/459448  (  3.1%)
+        Missed introns:    1383/281467  (  0.5%)
+         Novel introns:       0/281467  (  0.0%)
+           Missed loci:       0/52980   (  0.0%)
+            Novel loci:   14156/67312   ( 21.0%)
+
+ Total union super-loci across all input datasets: 67312
+158359 out of 158359 consensus transcripts written in merged.annotated.gtf (0 discarded as redundant)
+~                                                                                                  
+~                           
+
+#NB all the finished gtf files are saved as gtf files in stringtie/ballgown
+#NB 
+stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/13799X10_161209_D00294_0278_BCAEAJANXX_1_STAR.gtf /mnt/lustre/users/k1632479/ESC_NSC/STAR/13799X10_161209_D00294_0278_BCAEAJANXX_2.fastq.gzAligned.sortedByCoord.out.bam
+
+#must load python 2.7.10 NOT 3.1 .... for predDE.py
+#run on my RStudio Macbook
+
