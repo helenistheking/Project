@@ -498,6 +498,42 @@ Intron chain level:   100.0     |    99.5    |
 #NB 
 stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/13799X10_161209_D00294_0278_BCAEAJANXX_1_STAR.gtf /mnt/lustre/users/k1632479/ESC_NSC/STAR/13799X10_161209_D00294_0278_BCAEAJANXX_2.fastq.gzAligned.sortedByCoord.out.bam
 
-#must load python 2.7.10 NOT 3.1 .... for predDE.py
+#must load python 2.7.10 NOT 3.1 .... for prepDE.py
 #run on my RStudio Macbook
+
+module load general/R/3.5.0
+
+#load ballgown in R
+#set the working directory
+
+setwd("/mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown")
+
+library(ballgown)
+#library(RSkittleBrewer)
+library(genefilter)
+library(dplyr)
+library(devtools)
+
+#need to run ballgown to get the object for running polyester
+
+pheno_data = read.table(file ="PHENO_DATA.csv", header = TRUE, sep = "\t")
+
+#read in expresion data created by string tie
+
+sample_full_path <- paste("ballgown_input_files",pheno_data[,1], sep = '/')
+
+bg = ballgown(samples=as.vector(sample_full_path),pData=pheno_data)
+
+#Filter low-abundance genes. Here we remove all transcripts with a variance across the samples of less than one
+bg_filt = subset(bg,"rowVars(texpr(bg)) >1",genomesubset=TRUE)
+#Load gene names for lookup later in the tutorial
+bg_table = texpr(bg_filt, 'all')
+bg_gene_names = unique(bg_table[, 9:10])
+#Pull the gene_expression data frame from the ballgown object
+gene_expression = as.data.frame(gexpr(bg_filt))
+#View the first five rows of data (all columns) in one of the dataframes created
+head(gene_expression)
+
+
+
 
