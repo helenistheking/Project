@@ -494,9 +494,39 @@ Intron chain level:   100.0     |    99.5    |
 ~                                                                                                  
 ~                           
 
-#NB all the finished gtf files are saved as gtf files in stringtie/ballgown
-#NB 
-stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/13799X10_161209_D00294_0278_BCAEAJANXX_1_STAR.gtf /mnt/lustre/users/k1632479/ESC_NSC/STAR/13799X10_161209_D00294_0278_BCAEAJANXX_2.fastq.gzAligned.sortedByCoord.out.bam
+#NB all the finished gtf files are saved as gtf files in stringtie/ballgown/ballgown_input_files/sampleno
+#NB repeat in terminal for each sample
+stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/ballgown_input_files/sample01/13799X1_161209_D00294_0278_BCAEAJANXX_1_STAR.gtf /mnt/lustre/users/k1632479/ESC_NSC/STAR/13799X1_161209_D00294_0278_BCAEAJANXX_1.fastq.gzAligned.sortedByCoord.out.bam
+
+#2
+stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/ballgown_input_files/sample02/13799X2_161209_D00294_0278_BCAEAJANXX_1_STAR.gtf /mnt/lustre/users/k1632479/ESC_NSC/STAR/
+
+#3
+stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/ballgown_input_files/sample03/13799X3_161209_D00294_0278_BCAEAJANXX_1_STAR.gtf /mnt/lustre/users/k1632479/ESC_NSC/STAR/
+
+#4
+stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/ballgown_input_files/sample04/13799X4_161209_D00294_0278_BCAEAJANXX_1_STAR.gtf /mnt/lustre/users/k1632479/ESC_NSC/STAR/
+
+#5
+stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/ballgown_input_files/sample05/13799X5_161209_D00294_0278_BCAEAJANXX_1_STAR.gtf /mnt/lustre/users/k1632479/ESC_NSC/STAR/
+
+#6
+stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/ballgown_input_files/sample06/13799X6_161209_D00294_0278_BCAEAJANXX_1_STAR.gtf /mnt/lustre/users/k1632479/ESC_NSC/STAR/
+
+#7
+stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/ballgown_input_files/sample07/13799X7_161209_D00294_0278_BCAEAJANXX_1_STAR.gtf /mnt/lustre/users/k1632479/ESC_NSC/STAR/
+
+#8
+stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/ballgown_input_files//13799X8_161209_D00294_0278_BCAEAJANXX_1_STAR.gtf /mnt/lustre/users/k1632479/ESC_NSC/STAR/
+
+#9
+stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/ballgown_input_files/sample09/13799X9_161209_D00294_0278_BCAEAJANXX_1_STAR.gtf /mnt/lustre/users/k1632479/ESC_NSC/STAR/
+
+#10
+stringtie -e -B -p 8 -G /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf -o /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/ballgown_input_files/sample10/13799X10_161209_D00294_0278_BCAEAJANXX_1_STAR.gtf /mnt/lustre/users/k1632479/ESC_NSC/STAR/
+
+
+#-B option, it returns a Ballgown input table file, which contains coverage data for all transcripts. The output table files are placed in the same directory as the main GTF output. These tables have these specific names: (1) e2t.ctab, (2) e_data.ctab, (3) i2t.ctab, (4) i_data.ctab, and (5) t_data.ctab. 
 
 #must load python 2.7.10 NOT 3.1 .... for prepDE.py
 #run on my RStudio Macbook
@@ -516,13 +546,16 @@ library(devtools)
 
 #need to run ballgown to get the object for running polyester
 
-pheno_data = read.table(file ="PHENO_DATA.csv", header = TRUE, sep = "\t")
+pheno_data = read.table(file ="PHENO_DATA.csv", header = TRUE, sep = ",")
+
 
 #read in expresion data created by string tie
+sample_full_path <- paste("/mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/ballgown_input_files",pheno_data[,1], sep = '/')
+sample_full_path <- paste(sample_full_path,"", sep = '/')
 
-sample_full_path <- paste("ballgown_input_files",pheno_data[,1], sep = '/')
 
 bg = ballgown(samples=as.vector(sample_full_path),pData=pheno_data)
+
 
 #Filter low-abundance genes. Here we remove all transcripts with a variance across the samples of less than one
 bg_filt = subset(bg,"rowVars(texpr(bg)) >1",genomesubset=TRUE)
