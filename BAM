@@ -59,6 +59,17 @@ wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/grcm38.tar.gz
  
  tar -xzvf grcm38.tar 
  
+ #create a similar thing to gtf 
+ 
+  module load general/python/3.5.1 
+  
+   wget https://raw.githubusercontent.com/DaehwanKimLab/hisat2/master/hisat2_extract_splice_sites.py
+
+ #this uses the gtf file the same as used in STAR to guide the alignment 
+ python hisat2_extract_splice_sites.py /mnt/lustre/users/k1632479/grcm38/gencode.vM20.chr_patch_hapl_scaff.annotation.gtf > /mnt/lustre/users/k1632479/grcm38/splicesites.txt
+
+  
+ 
  #do trial alignment and conversion of sam to bam
 hisat2 --dta -x grcm38_snp_tran/genome_tran -U ESC_NSC/13799X1_161209_D00294_0278_BCAEAJANXX_1.fastq.gz -S | samtools view -bS > 13799X1_1.bam 
 
@@ -114,11 +125,25 @@ samtools sort -@ 8 -o "${FILE/%.fastq.gz/.sam}" > "${FILE/%.fastq.gz/.bam}"; don
 
 #The HISAT2 indexes for the human genome include only primary assembly.  If you choose to include alternative sequences introduced in GRCh38 and build your own HISAT2 indexes, then please be aware that those alternative sequences are nearly identical to the primary assembly in GRCh38 and as a result some reads may map to many more locations compared to when using the primary assembly only.  HISAT2 often skips those multi-mapped reads if the number of potential locations is more than the value specified by the -k option.  You may want to use a higher value for the -k option to resolve the issue.
  #to begin with want a for loop from home directory to change .txt.gz files to .fastq.gz files
+ 
+ #the alignHISAT2.sh file
 #!/bin/bash
-DIR="/mnt/lustre/users/k1632479"
-for FILE in "$DIR/ESC_NSC/"*.fastq.gz; do
-hisat2 --dta -x ${DIR}/grcm38/genome -U "$FILE" -S "${FILE/%.fastq.qz/.sam}";
-samtools sort -@ 8 -o "${FILE/%.fastq.gz/.bam}" "${FILE/%.fastq.qz/.sam}"; done
+# number of cores used
+#$ -pe smp 7
+
+# prefix
+#$ -N HISAT2
+
+# How much memory?
+#$ -l h_vmem=6G
+
+# How long will it run?
+#$ -l h_rt=24:00:00
+
+DIR="/mnt/lustre/users/k1632479/"
+for FILE in "$DIR"ESC_NSC/*.fastq.gz; do
+hisat2 --dta -x ${DIR}grcm38/genome -U "$FILE" -S "${FILE%.fastq.gz}".sam --known-splicesite-infile /mnt/lustre/users/k1632479/grcm38/splicesites.txt; done
+
     5218784 (10.18%) aligned 0 times
     41092812 (80.17%) aligned exactly 1 time
     4947227 (9.65%) aligned >1 times
