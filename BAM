@@ -291,15 +291,10 @@ module avail
 shellscipt saved as STAR_NSC.sh
 
 #!/bin/bash
-
-# number of cores used
-#$ -pe smp 4
-
 # prefix
 #$ -N STAR
-
-# How much memory?
-#$ -l h_vmem=4G
+#$ -pe smp 7
+#$ -l h_vmem=6G
 
 # How long will it run?
 #$ -l h_rt=24:00:00
