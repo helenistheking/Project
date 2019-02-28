@@ -18,7 +18,7 @@ module load general/R/3.5.0
 #load ballgown in R
 #set the working directory
 
-setwd("/mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown")
+setwd("/mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/ballgown/ballgown_input_files/")
 
 library(ballgown)
 #library(RSkittleBrewer)
@@ -51,10 +51,13 @@ head(gene_expression)
 
 save(bg, file="bg.Rda")
 
+#move to Rproject on my desktop
+#with this file preloaded Mus_musculus.GRC38.95_only_NMD.gt
+
 
 # need to find the way to summarise the FPKM values before change and after
 differential_expression_test <- stattest(bg, feature = "transcript", covariate = "cell_type", adjustvars = c("treatment"), getFC=TRUE, meas = "FPKM")
-mean( $qval, na.rm = TRUE)
+FPKM_qval_mean <- mean( $qval, na.rm = TRUE)
 
 
 
@@ -68,14 +71,8 @@ library(refGenome)
 NMD_transcript <- ensemblGenome()
 read.gtf(NMD_transcript, filename="Mus_musculus.GRC38.95_only_NMD.gtf")
 
-library(dplyr)
-
-
-
 NMD_transcriptnames <- as.data.frame(matrix(0 ,nrow=length(c(NMD_transcript@ev$gtf$transcript_id)), ncol=6),row.names=NMD_transcript@ev$gtf$transcript_id)
-
-colnames(NMD_transcriptnames) <-c("noNMD_DMSO_1", "noNMD_DMSO_2", "noNMD_DMSO_3", "NMD_CHX_1", "NMD_CHX_2", "NMD_CHX_3" )
-
+colnames(NMD_transcriptnames) <-c("X13799X1_1", "X13799X1_2", "X13799X1_3", "X13799X2_1", "X13799X2_2", "X13799X2_3" )
 NMD_transcriptnames[,4:6] <- 2
 
 
@@ -83,19 +80,8 @@ NMD_transcriptnames[,4:6] <- 2
 #see below NEED to edit
 
 
-
-
-
-
-
-
-
-
-
-transcript <- read.csv("transcript_count_matrix.csv")
-
 selected_transcript<- as.data.frame(cbind( transcript$X13799X1, transcript$X13799X1, transcript$X13799X1, transcript$X13799X2, transcript$X13799X2, transcript$X13799X2 ), row.names=transcript$transcript_id, stringAsFactors=FALSE) 
-colnames(selected_transcript) <-c("noNMD_DMSO_1", "noNMD_DMSO_2", "noNMD_DMSO_3", "NMD_CHX_1", "NMD_CHX_2", "NMD_CHX_3" )
+
 
 #using the mean LFC of DESeq2
 #<!-- > mean(abs(na.omit(resLFC$log2FoldChange))) -->
@@ -127,3 +113,8 @@ head_selected_transcript[2,] <- head_NMD_transcriptnames["row.names(selected_tra
 
 
 #the desired output is selected_transcript
+
+
+differential_expression_test <- stattest(bg, feature = "transcript", covariate = "cell_type", adjustvars = c("treatment"), getFC=TRUE, meas = "FPKM")
+difference <- FPKM_qval_mean-mean( $qval, na.rm = TRUE)
+#check change 
