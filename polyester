@@ -6,6 +6,7 @@ grep -v '^nonsense_mediated_decay' Mus_musculus.GRCm38.95.gtf > Mus_musculus.GRC
 
 wget ftp://ftp.ensembl.org/pub/release-95/fasta/mus_musculus//dna/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa.gz
 
+
 cd tools
 git clone git://github.com/gpertea/gclib
 git clone git://github.com/gpertea/gffread
@@ -17,7 +18,23 @@ make release
 #don't think I will need this
 
 tools/gffread/gffread -w /mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm38_transcripts.fa -g /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf
+
+
 tools/gffread/gffread -w /mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm38_no_NMD_transcripts.fa -g /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95_no_NMD.gtf
+
+#wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M20/GRCm38.p6.genome.fa.gz
+#wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M20/gencode.vM20.chr_patch_hapl_scaff.annotation.gtf.gz
+#tools/gffread/gffread -w /mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm38_transcripts_gencode.fa -g /mnt/lustre/users/k1632479/grcm38/gencode/GRCm38.p6.genome.fa /mnt/lustre/users/k1632479/grcm38/gencode/gencode.vM20.chr_patch_hapl_scaff.annotation.gtf
+
+
+
+#to workout the mean_rps
+echo $(zcat 13799X1_161209_D00294_0278_BCAEAJANXX_1.fastq.gz |wc -l)/4|bc
+52586374
+echo $(zcat 13799X2_161209_D00294_0278_BCAEAJANXX_1.fastq.gz |wc -l)/4|bc
+45871186
+
+others similar ~50000000
 
 
 #for polyester I am going to load 
@@ -25,19 +42,76 @@ tools/gffread/gffread -w /mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm3
 module load general/R/3.5.0
 R
 
-#source("http://bioconductor.org/biocLite.R")
-#biocLite("polyester")
-library("polyester")
-
 #We also provide a function simulate_experiment_empirical that takes a real transcript expression matrix (in FPKM or RPKM units) and corresponding annotation to simulate an experiment with 
 #abundances and differential expression fold changes similar to those given in the expression matrix. This function is compatible with the Ballgown package, or you can simply provide a transcript-by-replicate 
 #expression matrix generated with your favorite abundance estimation software.
 
 #must create synthetic read counts
-grep 'nonsense_mediated_decay' Mus_musculus.GRCm38.95.gtf > Mus_musculus.GRC38.95_only_NMD.gtf
+#grep 'nonsense_mediated_decay' Mus_musculus.GRCm38.95.gtf > Mus_musculus.GRC38.95_only_NMD.gtf
 
-     
+
+#source("http://bioconductor.org/biocLite.R")
+#biocLite("polyester")
+library("polyester")
+library("ballgown")
+library("devtools")
+library("seqinr")
+
 # load gtf file for annotation:
-#gtfpath = system.file('/mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf', package='polyester')
+gtfpath = '/mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf'
+gtf = gffRead(gtfpath)
+
+load('bg.Rda')
+
+EnsemblfastaFile <- "/mnt/lustre/users/k1632479/polyester/fasta/Mus_musculus.GRCm38_transcripts.fa"
+  fastaFile <- read.fasta(file = EnsemblfastaFile, as.string = TRUE, seqtype = "DNA")
+devtools::use_data(fastaFile, overwrite=TRUE)
+     
+# simulate reads based on this experiment's FPKMs
+simulate_experiment_empirical(bg, grouplabels=pData(bg)$group, seqpath=fastaFile, gtf=gtf, mean_rps=50000000, outdir='/mnt/lustre/users/k1632479/polyester/', seed=1247)
 
 
+
+
+
+#######
+#' read in GTF/GFF file as a data frame
+#'
+#' @param gffFile name of GTF/GFF on disk
+#' @param nrows number of rows to read in (default -1, which means read all 
+#'    rows)
+#' @param verbose if TRUE, print status info at beginning and end of file read.
+#'    Default FALSE.
+#' 
+#' @return data frame representing the GTF/GFF file
+#' 
+#' @seealso \code{\link{getAttributeField}} to extract data from "attributes" 
+#'  column; \url{http://useast.ensembl.org/info/website/upload/gff.html} for
+#'   more information on the GTF/GFF file format.
+#' 
+#' @author Kasper Hansen
+#' 
+#' @export
+#' @examples
+#' gtfPath = system.file('extdata', 'annot.gtf.gz', package='ballgown')
+#' annot = gffRead(gtfPath)
+gffRead = function (gffFile, nrows = -1, verbose=FALSE) 
+{
+    if(verbose){
+        cat("Reading ", gffFile, ": ", sep = "")    
+    }
+    gff = read.table(gffFile, sep = "\t", as.is = TRUE, quote = "", 
+        header = FALSE, comment.char = "#", nrows = nrows, 
+        colClasses = c("character", "character", "character", "integer", 
+            "integer", "character", "character", "character", "character"))
+    colnames(gff) = c("seqname", "source", "feature", "start", 
+        "end", "score", "strand", "frame", "attributes")
+    if(verbose){
+        cat("found", nrow(gff), "rows with classes:", paste(sapply(gff, 
+            class), collapse = ", "), "\n")
+    }
+    stopifnot(!any(is.na(gff$start)), !any(is.na(gff$end)))
+    return(gff)
+}
+
+# source: https://stat.ethz.ch/pipermail/bioconductor/2008-October/024669.html
