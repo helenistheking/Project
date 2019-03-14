@@ -36,6 +36,10 @@ echo $(zcat 13799X2_161209_D00294_0278_BCAEAJANXX_1.fastq.gz |wc -l)/4|bc
 
 others similar ~50000000
 
+#to remove all the non mitochondrial, numeric, or X,Y chromosomes
+grep -v "^" genes.gtf > genes_noMT.gtf
+
+
 
 #for polyester I am going to load 
 #install polyester and module load R
@@ -47,7 +51,25 @@ R
 #expression matrix generated with your favorite abundance estimation software.
 
 #must create synthetic read counts
-#grep 'nonsense_mediated_decay' Mus_musculus.GRCm38.95.gtf > Mus_musculus.GRC38.95_only_NMD.gtf
+###awk '$1 ~ /^#/ {print $0;next} {if ($1 !~ "GL456211.1" || $1 !~ "GL456210.1" || $1 !~ "GL456216.1" || $1 !~ "GL456219.1" || $1 !~ "GL456221.1" || $1 !~ "GL456233.1" || $1 !~ "GL456239.1" || $1 !~ "GL456350.1" || $1 !~ "GL456354.1" || $1 !~ "GL456372.1" || $1 !~ "GL456381.1" || $1 !~ "GL456385.1" || $1 !~ "JH584292.1" || $1 !~ "JH584293.1" || $1 !~ "JH584294.1" || $1 !~ "JH584295.1" || $1 !~ "JH584296.1" || $1 !~ "JH584297.1" || $1 !~ "JH584298.1" || $1 !~ "JH584299.1" || $1 !~ "JH584303.1" || $1 !~ "JH584304.1") print}' Mus_musculus.GRCm38.95.gtf >  Mus_musculus.GRCm38.95_nocontigs.gtf 
+
+grep -P "^[\dXYM]" Mus_musculus.GRCm38.95.gtf > Mus_musculus.GRCm38.95_nocontigs.gtf
+awk '$1 ~ /^#/ {print $0;next} {if ($1 ==  "GL456211.1") print}' Mus_musculus.GRCm38.95_nocontigs.gtf 
+
+#do the same for fasta files
+module load bioinformatics/samtools/1.9
+#index 
+samtools faidx Mus_musculus.GRCm38.dna.primary_assembly.fa
+#select chromosomes or regions
+samtools faidx Mus_musculus.GRCm38.dna.primary_assembly.fa 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 X Y MT > Mus_musculus.GRCm38.dna.primary_assembly_selected.fa
+
+
+#trialling doing experimental fasta files 
+zcat 13799X1_161209_D00294_0278_BCAEAJANXX_1.fastq.gz| cut -f 1,2 | sed 's/^@/>/' | tr "\t" "\n" > ESC_DMSO.fa
+zcat 13799X2_161209_D00294_0278_BCAEAJANXX_1.fastq.gz| cut -f 1,2 | sed 's/^@/>/' | tr "\t" "\n" > ESC_CHX.fa
+
+cat ESC_DMSO.fa ESC_CHX.fa > combined_experimental.fasta
+
 
 
 #source("http://bioconductor.org/biocLite.R")
@@ -56,21 +78,35 @@ library("polyester")
 library("ballgown")
 library("devtools")
 library("seqinr")
+library("Biostrings")
 
 # load gtf file for annotation:
-gtfpath = '/mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf'
+####gtfpath = '/mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95_nocontigs.gtf'
+gtfpath = '/mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/stringtie_merged.gtf'
 gtf = gffRead(gtfpath)
 
 load('bg.Rda')
 
-EnsemblfastaFile <- "/mnt/lustre/users/k1632479/polyester/fasta/Mus_musculus.GRCm38_transcripts.fa"
-  fastaFile <- read.fasta(file = EnsemblfastaFile, as.string = TRUE, seqtype = "DNA")
-devtools::use_data(fastaFile, overwrite=TRUE)
-     
+#fastaFile <- read.fasta(file = EnsemblfastaFile, as.string = TRUE, seqtype = "DNA")
+#EnsemblfastaFile <- "/mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.dna.primary_assembly_selected.fa"
+#EnsemblfastaFile <- "/mnt/lustre/users/k1632479/polyester/fasta/Mus_musculus.GRCm38_transcripts.fa"
+#fastaFile <- readDNAStringSet(EnsemblfastaFile)
+  ExperimentalfastaFile <-"/mnt/lustre/users/k1632479/ESC_NSC/combined_experimental.fasta"
+fastaFile <- readDNAStringSet(ExperimentalfastaFile)
+
+fasta_names <- names(fastaFile)
+fasta_names <- substr(fasta_names, 1, 2)
+fasta_names <- trimws(fasta_names)
+names(fastaFile) <- fasta_names
+ 
+
+  
+
 # simulate reads based on this experiment's FPKMs
-simulate_experiment_empirical(bg, grouplabels=pData(bg)$group, seqpath=fastaFile, gtf=gtf, mean_rps=50000000, outdir='/mnt/lustre/users/k1632479/polyester/', seed=1247)
+simulate_experiment_empirical(bg, grouplabels=pData(bg)$treatment, seqpath=fastaFile, gtf=gtf, mean_rps=50000000, outdir='/mnt/lustre/users/k1632479/polyester/', seed=1247)
 
 
+##trial
 
 
 
