@@ -58,6 +58,7 @@ fold_changes[i,4]<- 100
 fold_changes[i,5] <- 100 
 fold_changes[i,6] <- 100 }}
 
+mean(fold_changes)
 
 fold_changes <- read.table(file="fold_changes.txt")
 simulate_experiment(fastaFile, numreps=c(3,3), meanmodel=TRUE,fold_changes=fold_changes, outdir='/mnt/lustre/users/k1632479/polyester/', transcriptid=tNames, seed=12, error_model='illumina5', bias='rnaf')
