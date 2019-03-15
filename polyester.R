@@ -60,7 +60,7 @@ fold_changes[i,6] <- 100 }}
 
 write.table(fold_changes, file = "/mnt/lustre/users/k1632479/polyester/fold_changes.txt")
 
-simulate_experiment(fastaFile, numreps=c(3,3), meanmodel=TRUE,fold_changes=fold_changes, outdir='/mnt/lustre/users/k1632479/polyester/', transcriptid=tNames, seed=12, error_model='illumina6', bias='rnaf')
+simulate_experiment(fastaFile, numreps=c(3,3), meanmodel=TRUE,fold_changes=fold_changes, outdir='/mnt/lustre/users/k1632479/polyester/', transcriptid=tNames, seed=12, error_model='illumina5', bias='rnaf')
 
 #distr normal
 #'rnaf' represents positional bias that arises in protocols using RNA fragmentation
