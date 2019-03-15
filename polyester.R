@@ -58,8 +58,8 @@ fold_changes[i,4]<- 100
 fold_changes[i,5] <- 100 
 fold_changes[i,6] <- 100 }}
 
-write.table(fold_changes, file = "/mnt/lustre/users/k1632479/polyester/fold_changes.txt")
 
+fold_changes <- read.table(file="fold_changes.txt")
 simulate_experiment(fastaFile, numreps=c(3,3), meanmodel=TRUE,fold_changes=fold_changes, outdir='/mnt/lustre/users/k1632479/polyester/', transcriptid=tNames, seed=12, error_model='illumina5', bias='rnaf')
 
 #distr normal
@@ -68,4 +68,7 @@ simulate_experiment(fastaFile, numreps=c(3,3), meanmodel=TRUE,fold_changes=fold_
 #no gcbias as human cell lines
 #frag_GC_bias not using as adds
 #meanmol- sets read per transcripts as a function of transcription length using linear model 
+
+
+
 
