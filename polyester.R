@@ -25,7 +25,7 @@ library("stringr")
 
 EnsemblfastaFile <- "/mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm38_transcripts.fa"
 fastaFile <- readDNAStringSet(EnsemblfastaFile)
-fastapath = "Mus_musculus.GRCm38_transcripts.fa"
+fastapath = "/mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm38_transcripts.fa"
 
 #count the number of transcripts found in the gff fasta file
 numtx = count_transcripts(fastapath)
@@ -44,10 +44,10 @@ rownames(fold_changes) <- tNames
 #read.gtf(NMD_transcript, filename="/mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRC38.95_only_NMD.gtf")
 #NMD_transcriptnames <- as.data.frame((NMD_transcript@ev$gtf$transcript_id))
 #colnames(NMD_transcriptnames) <-c("t_name")
-NMD_transcriptnames <- read.table("NMD_transcriptnames", quote="\"", comment.char="")
+NMD_transcriptnames <- read.table("/mnt/lustre/users/k1632479/polyester/NMD_transcriptnames", quote="\"", comment.char="")
 
 mean(fold_changes)
-[1] 1.025513
+#[1] 1.025513
 
 for (i in c(1:numtx)) {
   if (any(str_detect(NMD_transcriptnames$t_name, as.vector(rownames(fold_changes))[i])) ==TRUE ){
@@ -58,6 +58,7 @@ fold_changes[i,4]<- 100
 fold_changes[i,5] <- 100 
 fold_changes[i,6] <- 100 }}
 
+write.table(fold_changes, file = "/mnt/lustre/users/k1632479/polyester/fold_changes.txt")
 
 simulate_experiment(fastaFile, numreps=c(3,3), meanmodel=TRUE,fold_changes=fold_changes, outdir='/mnt/lustre/users/k1632479/polyester/', transcriptid=tNames, seed=12, error_model='illumina6', bias='rnaf')
 
@@ -67,3 +68,4 @@ simulate_experiment(fastaFile, numreps=c(3,3), meanmodel=TRUE,fold_changes=fold_
 #no gcbias as human cell lines
 #frag_GC_bias not using as adds
 #meanmol- sets read per transcripts as a function of transcription length using linear model 
+
