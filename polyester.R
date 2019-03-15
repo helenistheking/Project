@@ -70,6 +70,6 @@ simulate_experiment(fastaFile, numreps=c(3,3), meanmodel=TRUE,fold_changes=fold_
 #frag_GC_bias not using as adds
 #meanmol- sets read per transcripts as a function of transcription length using linear model 
 
-
+#remove the sequencing model 
 
 
