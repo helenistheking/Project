@@ -22,11 +22,6 @@ tools/gffread/gffread -w /mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm3
 
 tools/gffread/gffread -w /mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm38_no_NMD_transcripts.fa -g /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95_no_NMD.gtf
 
-#wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M20/GRCm38.p6.genome.fa.gz
-#wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M20/gencode.vM20.chr_patch_hapl_scaff.annotation.gtf.gz
-#tools/gffread/gffread -w /mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm38_transcripts_gencode.fa -g /mnt/lustre/users/k1632479/grcm38/gencode/GRCm38.p6.genome.fa /mnt/lustre/users/k1632479/grcm38/gencode/gencode.vM20.chr_patch_hapl_scaff.annotation.gtf
-
-
 
 #to workout the mean_rps
 echo $(zcat 13799X1_161209_D00294_0278_BCAEAJANXX_1.fastq.gz |wc -l)/4|bc
