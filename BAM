@@ -66,7 +66,7 @@ wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/grcm38.tar.gz
    wget https://raw.githubusercontent.com/DaehwanKimLab/hisat2/master/hisat2_extract_splice_sites.py
 
  #this uses the gtf file the same as used in STAR to guide the alignment 
- python hisat2_extract_splice_sites.py /mnt/lustre/users/k1632479/grcm38/gencode.vM20.chr_patch_hapl_scaff.annotation.gtf > /mnt/lustre/users/k1632479/grcm38/splicesites.txt
+ python hisat2_extract_splice_sites.py /mnt/lustre/users/k1632479/grcm38/Mus_musculus.GRCm38.95.gtf > /mnt/lustre/users/k1632479/grcm38/splicesites.txt
 
   
  
@@ -235,8 +235,6 @@ module load compilers/gcc/8.1.0
 #download fasta files for mus musculus
 wget ftp://ftp.ensembl.org/pub/release-95/fasta/mus_musculus/dna/*
 
-#download a gtf file
-wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M20/gencode.vM20.chr_patch_hapl_scaff.annotation.gtf.gz
 
 #saved in my home directory
 #!/bin/bash                                                                                                                                                                                             
