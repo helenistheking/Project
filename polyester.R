@@ -60,8 +60,18 @@ fold_changes[i,6] <- 100 }}
 
 mean(fold_changes)
 
+
+library("polyester")
+library("Biostrings")
+library("stringr")
+
 fold_changes <- read.table(file="fold_changes.txt")
-simulate_experiment(fastaFile, numreps=c(3,3), meanmodel=TRUE,fold_changes=fold_changes, outdir='/mnt/lustre/users/k1632479/polyester/', transcriptid=tNames, seed=12, error_model='illumina5', bias='rnaf')
+EnsemblfastaFile <- "/mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm38_transcripts.fa"
+fastaFile <- readDNAStringSet(EnsemblfastaFile)
+
+tNames = word(names(readDNAStringSet(fastapath)))
+
+simulate_experiment(fastaFile, numreps=c(3,3), meanmodel=TRUE,fold_changes=fold_changes, outdir='/mnt/lustre/users/k1632479/polyester/', transcriptid=tNames, seed=12, bias='rnaf')
 
 #distr normal
 #'rnaf' represents positional bias that arises in protocols using RNA fragmentation
