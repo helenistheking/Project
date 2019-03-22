@@ -34,10 +34,9 @@ tNames = word(names(readDNAStringSet(fastapath)))
 
 set.seed(4)
 
-fold_change_values = sample(c(0.5, 1, 2), size=2*numtx, prob=c(0.05, 0.9, 0.05), replace=TRUE)
-fold_changes = matrix(fold_change_values, nrow=numtx, ncol=6)
+fold_change_values = sample(c(1, 2, 3), size=2*numtx, prob=c(0.05, 0.9, 0.05), replace=TRUE)
+fold_changes = matrix(fold_change_values, nrow=numtx, ncol=3)
 #work out dimensions
-colnames(fold_changes) <-c("X13799X1_1", "X13799X1_2", "X13799X1_3", "X13799X2_1", "X13799X2_2", "X13799X2_3" )
 rownames(fold_changes) <- tNames
 
 
@@ -51,27 +50,55 @@ mean(fold_changes)
 
 for (i in c(1:numtx)) {
   if (any(str_detect(NMD_transcriptnames$t_name, as.vector(rownames(fold_changes))[i])) ==TRUE ){
-  fold_changes[i,1] <- 0
-fold_changes[i,2] <- 0 
-fold_changes[i,3] <- 0 
-fold_changes[i,4]<- 100 
-fold_changes[i,5] <- 100 
-fold_changes[i,6] <- 100 }}
+  fold_changes[i,1] <- 1
+fold_changes[i,2]<- 100 }}
 
 mean(fold_changes)
+
+write.table(fold_changes, "/mnt/lustre/users/k1632479/polyester/fold_changes.txt")
+
+colnames(fold_changes) <- NULL
+rownames(fold_changes) <- NULL
+
+simulate_experiment(EnsemblfastaFile, numreps=c(3,3),fold_changes= fold_changes, readlen=100, reads_per_transcript=readspertx, outdir="/mnt/lustre/users/k1632479/polyester/", distr="empirical", error_model="illumina5", bias="rnaf")
+
 
 
 library("polyester")
 library("Biostrings")
 library("stringr")
 
-fold_changes <- read.table(file="fold_changes.txt")
+#has to be a simplified two column matrix
+fold_changes<- data.matrix(read.table("fold_changes.txt")[,1:2])
+rownames(fold_changes) <- NULL
+
 EnsemblfastaFile <- "/mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm38_transcripts.fa"
-fastaFile <- readDNAStringSet(EnsemblfastaFile)
+fasta_File <- readDNAStringSet(EnsemblfastaFile)
 
-tNames = word(names(readDNAStringSet(fastapath)))
+# ~20x coverage ----> reads per transcript = transcriptlength/readlength * 20
+# here all transcripts will have ~equal FPKM
 
-simulate_experiment(fastaFile, numreps=c(3,3), meanmodel=TRUE,fold_changes=fold_changes, outdir='/mnt/lustre/users/k1632479/polyester/', transcriptid=tNames, seed=12, bias='rnaf')
+#replace all 0 counts with 1
+fastaFile_nozero <- replace(width(fasta_File), width(fasta_File) == 0, 1)
+
+readspertx = round(20 * fastaFile_nozero / 100)
+
+
+simulate_experiment(EnsemblfastaFile, numreps=c(3,3),fold_changes=fold_changes, reads_per_transcript=readspertx, outdir="simulatedreads", distr="empirical", error_model="illumina5", bias="rnaf")
+
+
+
+
+
+#subset 
+subset_fold_changes<-fold_changes[1:20,]
+subset_fasta = fasta_File[1:20]
+writeXStringSet(subset_fasta, 'subset_fasta.fa')
+subset_Fasta_nozero <- replace(width(subset_fasta), width(subset_fasta) == 0, 1)
+subsetreadspertx = round(20 * subset_Fasta_nozero / 100)
+simulate_experiment('subset_fasta.fa', reads_per_transcript=subsetreadspertx, 
+    num_reps=c(3,3), fold_changes=subset_fold_changes, outdir='simulated_reads') 
+
 
 #distr normal
 #'rnaf' represents positional bias that arises in protocols using RNA fragmentation
@@ -81,5 +108,20 @@ simulate_experiment(fastaFile, numreps=c(3,3), meanmodel=TRUE,fold_changes=fold_
 #meanmol- sets read per transcripts as a function of transcription length using linear model 
 
 #remove the sequencing model 
+
+
+###after error 
+
+> lengths <- sapply(fastaFile, FUN=length)
+> min(lengths)
+[1] 9
+> w <- which(lengths > 500)
+> fastaFile_new <- fastaFile[w]
+> simplified_fold_changes_new <- simplified_fold_changes[w]
+> simplified_fold_changes_new <- simplified_fold_changes[w,]
+> readspertx_new <- readspertx[w]
+> writeXStringSet(fastaFile_new, 'fastaFile_new.fa')
+tNames_new = word(names(readDNAStringSet('fastaFile_new.fa')))
+simulate_experiment('fastaFile_new.fa', numreps=c(3,3),fold_changes= simplified_fold_changes_new,readlen=100, reads_per_transcript=readspertx_new, outdir="/mnt/lustre/users/k1632479/polyester/", transcriptid=tNames_new, )
 
 
