@@ -84,20 +84,10 @@ fastaFile_nozero <- replace(width(fasta_File), width(fasta_File) == 0, 1)
 readspertx = round(20 * fastaFile_nozero / 100)
 
 
-simulate_experiment(EnsemblfastaFile, numreps=c(3,3),fold_changes=fold_changes, reads_per_transcript=readspertx, outdir="simulatedreads", distr="empirical", error_model="illumina5", bias="rnaf")
+
+simulate_experiment(EnsemblfastaFile, numreps=c(3,3),fold_changes=fold_changes, reads_per_transcript=readspertx, outdir="simulatedread", distr="empirical", error_model="illumina5", bias="rnaf")
 
 
-
-
-
-#subset 
-subset_fold_changes<-fold_changes[1:20,]
-subset_fasta = fasta_File[1:20]
-writeXStringSet(subset_fasta, 'subset_fasta.fa')
-subset_Fasta_nozero <- replace(width(subset_fasta), width(subset_fasta) == 0, 1)
-subsetreadspertx = round(20 * subset_Fasta_nozero / 100)
-simulate_experiment('subset_fasta.fa', reads_per_transcript=subsetreadspertx, 
-    num_reps=c(3,3), fold_changes=subset_fold_changes, outdir='simulated_reads') 
 
 
 #distr normal
