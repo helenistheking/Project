@@ -62,6 +62,13 @@ rownames(fold_changes) <- NULL
 
 simulate_experiment(EnsemblfastaFile, numreps=c(3,3),fold_changes= fold_changes, readlen=100, reads_per_transcript=readspertx, outdir="/mnt/lustre/users/k1632479/polyester/", distr="empirical", error_model="illumina5", bias="rnaf")
 
+##output of results 
+
+#[1] 2.000585
+#[1] 3.610394
+
+#to run the simulate_experiment call when the fold changes has already been created
+
 
 
 library("polyester")
