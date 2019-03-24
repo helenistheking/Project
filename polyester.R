@@ -95,7 +95,7 @@ readspertx = round(20 * fastaFile_nozero / 100)
 
 
 
-simulate_experiment(EnsemblfastaFile, numreps=c(1,1),fold_changes=fold_changes, reads_per_transcript=readspertx, paired=FALSE, outdir="/mnt/lustre/users/k1632479/polyester/simulatedread", distr="empirical", error_model="illumina5", bias="rnaf")
+simulate_experiment(EnsemblfastaFile, numreps=c(3,3),fold_changes=fold_changes, reads_per_transcript=readspertx, paired=FALSE, outdir="/mnt/lustre/users/k1632479/polyester/simulatedread", distr="empirical", error_model="illumina5", bias="rnaf")
 
 
 ####polyester cannot handle the size of the fasta file ect.
