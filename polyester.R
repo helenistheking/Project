@@ -71,12 +71,15 @@ simulate_experiment(EnsemblfastaFile, numreps=c(3,3),fold_changes= fold_changes,
 
 
 
+
+
+
 library("polyester")
 library("Biostrings")
 library("stringr")
 
 #has to be a simplified two column matrix
-fold_changes<- data.matrix(read.table("fold_changes.txt")[,1:2])
+fold_changes<- data.matrix(read.table("/mnt/lustre/users/k1632479/polyester/fold_changes.txt")[,1:2])
 rownames(fold_changes) <- NULL
 
 EnsemblfastaFile <- "/mnt/lustre/users/k1632479/polyester/Mus_musculus.GRCm38_transcripts.fa"
@@ -92,8 +95,12 @@ readspertx = round(20 * fastaFile_nozero / 100)
 
 
 
-simulate_experiment(EnsemblfastaFile, numreps=c(3,3),fold_changes=fold_changes, reads_per_transcript=readspertx, outdir="simulatedread", distr="empirical", error_model="illumina5", bias="rnaf")
+simulate_experiment(EnsemblfastaFile, numreps=c(1,1),fold_changes=fold_changes, reads_per_transcript=readspertx, paired=FALSE, outdir="/mnt/lustre/users/k1632479/polyester/simulatedread", distr="empirical", error_model="illumina5", bias="rnaf")
 
+
+####polyester cannot handle the size of the fasta file ect.
+##so doing one repeat of both and trying to run
+#if this does not work then im going to try to seperate the log fold changes
 
 
 
