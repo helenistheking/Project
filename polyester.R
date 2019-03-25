@@ -93,6 +93,9 @@ fastaFile_nozero <- replace(width(fasta_File), width(fasta_File) == 0, 1)
 
 readspertx = round(1 * fastaFile_nozero / 100)
 
+readspertx <- replace(readspertx, readspertx == 0, 1)
+
+
 simulate_experiment(EnsemblfastaFile, numreps=c(3,3),fold_changes=fold_changes, reads_per_transcript=readspertx, paired=FALSE, outdir="/mnt/lustre/users/k1632479/polyester/simulatedread", distr="empirical", error_model="illumina5", bias="rnaf")
 
 
