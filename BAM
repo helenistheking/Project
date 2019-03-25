@@ -101,19 +101,9 @@ DIR="/mnt/lustre/users/k1632479/ESC_NSC/"\
 for FILE in "$DIR"*.txt.gz; do
 mv "$FILE" "${FILE/%.txt.gz/.fastq.gz}"; done
 
+#expand
 tar -xvf grcm38.tar
 
-module load bioinformatics/hisat2/2.0.4
-module load bioinformatics/STAR/2.5.2a
-module load bioinformatics/samtools/1.9
-
-
-
-#Extend for loop to qsub the rest of the alignments
-#!/bin/bash                                                                                                                                                                                              
-DIR="/mnt/lustre/users/k1632479/"
-for FILE in "$DIR/ESC_NSC/"*.fastq.gz; do
-hisat2 --dta -x "$DIRgrcm38/genome" -U "$FILE" -S "${FILE/%.fastq.gz/.sam}";
 samtools sort -@ 8 -o "${FILE/%.fastq.gz/.sam}" > "${FILE/%.fastq.gz/.bam}"; done
  
 #-p 2 : This tells hisat2 that it can use 2 CPU cores on the machine. Short read mapping scales very efficiently across cores so if you have more cores available then you should use them to speed up your analysis.
