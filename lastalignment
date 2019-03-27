@@ -1,0 +1,137 @@
+#alignhisat2.sh  
+#4467792
+qname        LowMemShortterm.q   
+hostname     nodeb14.prv.rosalind.compute.estate
+group        k1632479            
+owner        k1632479            
+project      NONE                
+department   defaultdepartment   
+jobname      HISAT2              
+jobnumber    4467792             
+taskid       undefined
+account      sge                 
+priority     0                   
+qsub_time    Mon Mar 25 14:59:44 2019
+start_time   Mon Mar 25 14:59:45 2019
+end_time     Mon Mar 25 16:10:04 2019
+granted_pe   smp                 
+slots        7                   
+failed       0    
+exit_status  0                   
+ru_wallclock 4219         
+ru_utime     3481.388     
+ru_stime     79.063       
+ru_maxrss    4080316             
+ru_ixrss     0                   
+ru_ismrss    0                   
+ru_idrss     0                   
+ru_isrss     0                   
+ru_minflt    1937811             
+ru_majflt    26                  
+ru_nswap     0                   
+ru_inblock   12584               
+ru_oublock   88274792            
+ru_msgsnd    0                   
+ru_msgrcv    0                   
+ru_nsignals  0                   
+ru_nvcsw     5218075             
+ru_nivcsw    16252               
+cpu          3973.450     
+mem          14074.744         
+io           235.431           
+iow          0.000             
+maxvmem      4.310G
+arid         undefined
+
+#run bamHISAT.sh
+#4467847
+
+#run stringtie
+#4467929
+
+#samtools index
+#DONE
+
+
+#stringtie merge DMSO
+#4467953
+
+#gffcompare
+ /users/k1632479/tools/gffcompare/gffcompare -r /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf -G -o merged /mnt/lustre/users/k1632479/ESC_NSC/HISAT/stringtie/DMSO/stringtie_merged.gtf
+#DONE
+
+#stringtie merge CHX 
+
+#gffcompare
+/users/k1632479/tools/gffcompare/gffcompare -r /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf -G -o merged /mnt/lustre/users/k1632479/ESC_NSC/HISAT/stringtie/CHX/stringtie_merged.gtf
+#DONE
+
+
+#alignSTAR.sh
+#4467772
+
+qname        LowMemShortterm.q   
+hostname     nodec01.prv.rosalind.compute.estate
+group        k1632479            
+owner        k1632479            
+project      NONE                
+department   defaultdepartment   
+jobname      STAR                
+jobnumber    4467772             
+taskid       undefined
+account      sge                 
+priority     0                   
+qsub_time    Mon Mar 25 14:47:30 2019
+start_time   Mon Mar 25 14:47:31 2019
+end_time     Mon Mar 25 15:13:37 2019
+granted_pe   smp                 
+slots        7                   
+failed       0    
+exit_status  0                   
+ru_wallclock 1566         
+ru_utime     4457.382     
+ru_stime     199.776      
+ru_maxrss    29880292            
+ru_ixrss     0                   
+ru_ismrss    0                   
+ru_idrss     0                   
+ru_isrss     0                   
+ru_minflt    14418034            
+ru_majflt    19                  
+ru_nswap     0                   
+ru_inblock   5720                
+ru_oublock   106034008           
+ru_msgsnd    0                   
+ru_msgrcv    0                   
+ru_nsignals  0                   
+ru_nvcsw     905380              
+ru_nivcsw    264281              
+cpu          4886.830     
+mem          123289.658        
+io           465.521           
+iow          0.000             
+maxvmem      29.456G
+arid         undefined
+
+
+
+#stringtie
+#4467821
+
+#samtools index
+#DONE
+
+#stringtie merge1DMSO
+#4467948
+
+#gffcompare
+ /users/k1632479/tools/gffcompare/gffcompare -r /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf -G -o merged /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/DMSO/stringtie_merged.gtf
+#DONE
+
+#stringtie merge2CHX
+#4467955
+
+#gffcompare
+/users/k1632479/tools/gffcompare/gffcompare -r /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf -G -o merged /mnt/lustre/users/k1632479/ESC_NSC/STAR/stringtie/CHX/stringtie_merged.gtf
+#DONE
+
