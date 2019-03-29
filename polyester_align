@@ -1,0 +1,137 @@
+#convert fasta to fastq
+ module load general/perl/5.22.0
+ #provided script which converts to a qualtiy score of 40
+ fasta_to_fastq.pl
+ perl fasta_to_fastq.pl sample_01.fasta > sample_01.fastq 
+
+#alignhisat2.sh  
+#4468372
+
+qacct -j 4468372 
+[k1632479@login2(rosalind) ~]$ qacct -j 4468372 
+==============================================================
+qname        LowMemLongterm.q    
+hostname     noded13.prv.rosalind.compute.estate
+group        k1632479            
+owner        k1632479            
+project      NONE                
+department   defaultdepartment   
+jobname      HISAT2              
+jobnumber    4468372             
+taskid       undefined
+account      sge                 
+priority     0                   
+qsub_time    Wed Mar 27 08:27:40 2019
+start_time   Wed Mar 27 08:27:41 2019
+end_time     Wed Mar 27 08:50:32 2019
+granted_pe   smp                 
+slots        7                   
+failed       0    
+exit_status  0                   
+ru_wallclock 1371         
+ru_utime     1198.339     
+ru_stime     87.659       
+ru_maxrss    4106660             
+ru_ixrss     0                   
+ru_ismrss    0                   
+ru_idrss     0                   
+ru_isrss     0                   
+ru_minflt    3006905             
+ru_majflt    41                  
+ru_nswap     0                   
+ru_inblock   16808               
+ru_oublock   43992784            
+ru_msgsnd    0                   
+ru_msgrcv    0                   
+ru_nsignals  0                   
+ru_nvcsw     1625                
+ru_nivcsw    1164842             
+cpu          1285.997     
+mem          4994.641          
+io           107.379           
+iow          0.000             
+maxvmem      4.187G
+arid         undefined
+
+#run bamHISAT.sh
+#DONE
+
+#run stringtie
+#4469093
+
+#samtools index
+
+#stringtie mergeCHX
+#4469504
+
+#gffcompare
+ /users/k1632479/tools/gffcompare/gffcompare -r /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf -G -o merged /mnt/lustre/users/k1632479/simulatedread/HISAT/stringtie/CHX/stringtie_merged.gtf
+
+#stringtie merge2
+#4469511
+#gffcompare
+ /users/k1632479/tools/gffcompare/gffcompare -r /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf -G -o merged /mnt/lustre/users/k1632479/simulatedread/HISAT/stringtie/DMSO/stringtie_merged.gtf
+
+
+
+#alignSTAR.sh
+#4468373
+qacct -j 4468373
+[k1632479@login2(rosalind) ~]$ qacct -j 4468373
+==============================================================
+qname        LowMemLongterm.q    
+hostname     noded18.prv.rosalind.compute.estate
+group        k1632479            
+owner        k1632479            
+project      NONE                
+department   defaultdepartment   
+jobname      STAR                
+jobnumber    4468373             
+taskid       undefined
+account      sge                 
+priority     0                   
+qsub_time    Wed Mar 27 08:27:46 2019
+start_time   Wed Mar 27 08:27:48 2019
+end_time     Wed Mar 27 09:23:48 2019
+granted_pe   smp                 
+slots        7                   
+failed       0    
+exit_status  0                   
+ru_wallclock 3360         
+ru_utime     512.935      
+ru_stime     2849.001     
+ru_maxrss    29877692            
+ru_ixrss     0                   
+ru_ismrss    0                   
+ru_idrss     0                   
+ru_isrss     0                   
+ru_minflt    1446123             
+ru_majflt    56                  
+ru_nswap     0                   
+ru_inblock   11512               
+ru_oublock   840816              
+ru_msgsnd    0                   
+ru_msgrcv    0                   
+ru_nsignals  0                   
+ru_nvcsw     50268               
+ru_nivcsw    22172               
+cpu          3361.936     
+mem          90727.878         
+io           290.635           
+iow          0.000             
+maxvmem      29.351G
+arid         undefined
+
+#runstringtie
+
+#samtools index
+
+#stringtie mergeDMSO
+#gffcompare
+ /users/k1632479/tools/gffcompare/gffcompare -r /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf -G -o merged /mnt/lustre/users/k1632479/simulatedread/STAR/stringtie/DMSO/stringtie_merged.gtf
+
+
+#stringtie mergeCHX
+#gffcompare
+ /users/k1632479/tools/gffcompare/gffcompare -r /mnt/lustre/users/k1632479/grcm38/Ensembl/Mus_musculus.GRCm38.95.gtf -G -o merged /mnt/lustre/users/k1632479/simulatedread/STAR/stringtie/CHX/stringtie_merged.gtf
+
